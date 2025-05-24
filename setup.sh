@@ -1,33 +1,39 @@
 #!/bin/bash
 
+# source /home/user/miniconda3/etc/profile.d/conda.sh
+
 # https://github.com/graphdeco-inria/gaussian-splatting/issues/923
 if ! grep "#include <float.h>" submodules/simple-knn/simple_knn.cu > /dev/null 2>&1; then
     echo "Please include \"float.h\" header in submodules/simple-knn/simple_knn.cu"
     exit 1
 fi
 
-conda create -n gaussian_splatting python=3.9
+conda env remove -y -n gaussian_splatting
 
-conda activate gaussian_splatting
+conda create -y -n gaussian_splatting python=3.9
 
-conda install -y "numpy<2"
+if conda activate gaussian_splatting; then
 
-conda install -y "cuda-toolkit=12.8" -c nvidia
+    conda install -y "numpy<2"
 
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+    conda install -y "cuda-toolkit=12.8" -c nvidia
 
-conda install -y plyfile -c conda-forge
+    pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
 
-conda install -y tqdm
+    conda install -y plyfile -c conda-forge
 
-export CUDA_HOME=/usr/local/cuda-12.8
+    conda install -y tqdm
 
-pip install submodules/diff-gaussian-rasterization
+    export CUDA_HOME=/usr/local/cuda-12.8
 
-pip install submodules/simple-knn
+    pip install submodules/diff-gaussian-rasterization
 
-pip install submodules/fused-ssim
+    pip install submodules/simple-knn
 
-pip install opencv-python
+    pip install submodules/fused-ssim
 
-pip install joblib
+    pip install opencv-python
+
+    pip install joblib
+
+fi
